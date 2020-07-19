@@ -8,11 +8,10 @@ let TokenCheck = (token) => {
     }
 }
 
-let TokenCreate = (id, expiryDate) => {
+let TokenCreate = (id) => {
     return jwt.sign(
         { userId: id },
-        keys.jwtKey,
-        { expiresIn: expiryDate }
+        keys.jwtKey
     );
 }
 module.exports = {
