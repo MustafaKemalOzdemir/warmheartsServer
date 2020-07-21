@@ -6,12 +6,12 @@ const userSchema = mongoose.Schema({
         required: true
     },
 
-    name: {
+    firstname: {
         type: String,
         required: true
     },
 
-    surName: {
+    lastname: {
         type: String,
         required: true
     },
@@ -24,13 +24,7 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
-    },
-
-    posts: [
-
-    ],
-
-
+    }
 });
 
 module.exports = {
