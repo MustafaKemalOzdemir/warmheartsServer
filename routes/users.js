@@ -7,6 +7,26 @@ let User = require('../models/User');
 
 router.post('/signup', async (req, res) => {
     const { email, firstname, lastname, password } = req.body;
+    if (!email)
+        return res.status(400).json({
+            success: false,
+            message: 'Email has not been provided'
+        });
+    if (!firstname)
+        return res.status(400).json({
+            success: false,
+            message: 'Firstname has not been provided'
+        });
+    if (!lastname)
+        return res.status(400).json({
+            success: false,
+            message: 'Lastname has not been provided'
+        });
+    if (!password)
+        return res.status(400).json({
+            success: false,
+            message: 'Password has not been provided'
+        });
     User.findOne({ 'email': email }, (user) => {
         if (user)
             res.status(409).json({
@@ -42,7 +62,7 @@ router.post('/signup', async (req, res) => {
 router.post('/signin', async (req, res) => {
 
     const token = Auth.TokenCreate(queryResult[0]._id);
-
+    
 });
 
 module.exports = router;
