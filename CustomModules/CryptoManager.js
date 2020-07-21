@@ -12,13 +12,13 @@ const key = new NodeRSA('-----BEGIN RSA PRIVATE KEY-----\n' +
     '-----END RSA PRIVATE KEY-----');
 
 module.exports = {
-    encryptText: function(text) {
+    EncryptText: function(text) {
         return key.encrypt(text, 'base64');
     },
-    generateUserId: function() {
+    GenerateUserId: function() {
         return md5(Date.now());
     },
-    encryptPassword: function(pass) {
+    EncryptPassword: function(pass) {
         return md5(pass);
     },
 }
