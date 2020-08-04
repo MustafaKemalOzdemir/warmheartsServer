@@ -16,6 +16,8 @@ router.get('/', async(req, res) => {
 
 router.post('/signup', async(req, res) => {
     const { email, firstname, lastname, password } = req.body;
+    var firstName = '';
+    var lastName = '';
     if (!email) {
         return res.status(400).json({
             'success': false,
@@ -23,18 +25,17 @@ router.post('/signup', async(req, res) => {
         });
     }
 
-    if (!firstname) {
-        return res.status(400).json({
-            'success': false,
-            'message': 'Firstname has not been provided'
-        });
-    }
+    if (firstname) {
+        if (!lastname) {
+            return res.status(400).json({
+                'success': false,
+                'message': 'Fistname and Lastname have not been provided'
+            });
+        } else {
+            firstName = firstname;
+            lastName = lastname;
 
-    if (!lastname) {
-        return res.status(400).json({
-            'success': false,
-            'message': 'Lastname has not been provided'
-        });
+        }
     }
 
     if (!password) {
@@ -52,10 +53,15 @@ router.post('/signup', async(req, res) => {
                 'message': 'Email is already registered'
             });
 
+        const generatedUserId = CryptoManager.GenerateUserId();
+        if (firstName === '') {
+            firstName = 'Guest-';
+            lastName = generatedUserId;
+        }
         const user = new User({
-            'userId': CryptoManager.GenerateUserId(),
-            'firstname': firstname,
-            'lastname': lastname,
+            'userId': generatedUserId,
+            'firstname': firstName,
+            'lastname': lastName,
             'email': email,
             'password': password,
         });
@@ -65,6 +71,7 @@ router.post('/signup', async(req, res) => {
                 return res.status(201).json({
                     'success': true,
                     'message': 'Account has been created',
+                    'token': Auth.TokenCreate(user.userId),
                     'user': result
                 });
         }).catch((error) => {
