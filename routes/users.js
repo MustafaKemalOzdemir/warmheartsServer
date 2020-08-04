@@ -5,8 +5,19 @@ let CryptoManager = require('../CustomModules/CryptoManager');
 let Auth = require('../CustomModules/Authentication');
 let User = require('../models/User');
 
+router.get('/', async(req, res) => {
+    User.find((err, users) => {
+        return res.status(200).json({
+            'sucess': true,
+            'result': users
+        });
+    });
+});
+
 router.post('/signup', async(req, res) => {
     const { email, firstname, lastname, password } = req.body;
+    var firstName = '';
+    var lastName = '';
     if (!email) {
         return res.status(400).json({
             'success': false,
@@ -14,18 +25,17 @@ router.post('/signup', async(req, res) => {
         });
     }
 
-    if (!firstname) {
-        return res.status(400).json({
-            'success': false,
-            'message': 'Firstname has not been provided'
-        });
-    }
+    if (firstname) {
+        if (!lastname) {
+            return res.status(400).json({
+                'success': false,
+                'message': 'Fistname and Lastname have not been provided'
+            });
+        } else {
+            firstName = firstname;
+            lastName = lastname;
 
-    if (!lastname) {
-        return res.status(400).json({
-            'success': false,
-            'message': 'Lastname has not been provided'
-        });
+        }
     }
 
     if (!password) {
@@ -34,7 +44,6 @@ router.post('/signup', async(req, res) => {
             'message': 'Password has not been provided'
         });
     }
-    console.log(email)
     User.findOne({ 'email': email }, (err, foundUser) => {
         console.log(foundUser);
         console.log(err);
@@ -44,10 +53,15 @@ router.post('/signup', async(req, res) => {
                 'message': 'Email is already registered'
             });
 
+        const generatedUserId = CryptoManager.GenerateUserId();
+        if (firstName === '') {
+            firstName = 'Guest-';
+            lastName = generatedUserId;
+        }
         const user = new User({
-            'userId': CryptoManager.GenerateUserId(),
-            'firstname': firstname,
-            'lastname': lastname,
+            'userId': generatedUserId,
+            'firstname': firstName,
+            'lastname': lastName,
             'email': email,
             'password': password,
         });
@@ -57,6 +71,7 @@ router.post('/signup', async(req, res) => {
                 return res.status(201).json({
                     'success': true,
                     'message': 'Account has been created',
+                    'token': Auth.TokenCreate(user.userId),
                     'user': result
                 });
         }).catch((error) => {
@@ -72,7 +87,7 @@ router.post('/signup', async(req, res) => {
 router.post('/signin', async(req, res) => {
 
     const { email, password } = req.body;
-
+    console.log(req.body)
     if (!email)
         return res.status(400).json({
             'success': false,
@@ -100,7 +115,8 @@ router.post('/signin', async(req, res) => {
         return res.status(200).json({
             'success': true,
             'message': 'Access granted',
-            'token': token
+            'token': token,
+            'user': user
         });
     });
 });
