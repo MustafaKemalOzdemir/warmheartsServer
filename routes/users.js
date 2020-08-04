@@ -5,6 +5,15 @@ let CryptoManager = require('../CustomModules/CryptoManager');
 let Auth = require('../CustomModules/Authentication');
 let User = require('../models/User');
 
+router.get('/', async(req, res) => {
+    User.find((err, users) => {
+        return res.status(200).json({
+            'sucess': true,
+            'result': users
+        });
+    });
+});
+
 router.post('/signup', async(req, res) => {
     const { email, firstname, lastname, password } = req.body;
     if (!email) {
@@ -34,7 +43,6 @@ router.post('/signup', async(req, res) => {
             'message': 'Password has not been provided'
         });
     }
-    console.log(email)
     User.findOne({ 'email': email }, (err, foundUser) => {
         console.log(foundUser);
         console.log(err);
@@ -72,7 +80,7 @@ router.post('/signup', async(req, res) => {
 router.post('/signin', async(req, res) => {
 
     const { email, password } = req.body;
-
+    console.log(req.body)
     if (!email)
         return res.status(400).json({
             'success': false,
@@ -100,7 +108,8 @@ router.post('/signin', async(req, res) => {
         return res.status(200).json({
             'success': true,
             'message': 'Access granted',
-            'token': token
+            'token': token,
+            'user': user
         });
     });
 });
