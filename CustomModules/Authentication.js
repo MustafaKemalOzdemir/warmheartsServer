@@ -1,4 +1,5 @@
 const keys = require('../private/keys');
+const jwt = require('jsonwebtoken');
 
 let TokenCheck = (token) => {
     try {
@@ -9,8 +10,7 @@ let TokenCheck = (token) => {
 }
 
 let TokenCreate = (id) => {
-    return jwt.sign(
-        { userId: id },
+    return jwt.sign({ userId: id },
         keys.jwtKey
     );
 }

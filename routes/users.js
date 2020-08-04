@@ -5,30 +5,40 @@ let CryptoManager = require('../CustomModules/CryptoManager');
 let Auth = require('../CustomModules/Authentication');
 let User = require('../models/User');
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', async(req, res) => {
     const { email, firstname, lastname, password } = req.body;
-    if (!email)
+    if (!email) {
         return res.status(400).json({
             'success': false,
             'message': 'Email has not been provided'
         });
-    if (!firstname)
+    }
+
+    if (!firstname) {
         return res.status(400).json({
             'success': false,
             'message': 'Firstname has not been provided'
         });
-    if (!lastname)
+    }
+
+    if (!lastname) {
         return res.status(400).json({
             'success': false,
             'message': 'Lastname has not been provided'
         });
-    if (!password)
+    }
+
+    if (!password) {
         return res.status(400).json({
             'success': false,
             'message': 'Password has not been provided'
         });
-    User.findOne({ 'email': email }, (user) => {
-        if (user)
+    }
+    console.log(email)
+    User.findOne({ 'email': email }, (err, foundUser) => {
+        console.log(foundUser);
+        console.log(err);
+        if (foundUser)
             return res.status(409).json({
                 'success': false,
                 'message': 'Email is already registered'
@@ -59,7 +69,7 @@ router.post('/signup', async (req, res) => {
     });
 });
 
-router.post('/signin', async (req, res) => {
+router.post('/signin', async(req, res) => {
 
     const { email, password } = req.body;
 
@@ -74,7 +84,8 @@ router.post('/signin', async (req, res) => {
             'message': 'Password has not been provided'
         });
 
-    User.findOne({ 'email': email }, (user) => {
+    User.findOne({ 'email': email }, (err, user) => {
+        console.log(user);
         if (!user)
             return res.status(400).json({
                 'success': false,
@@ -94,7 +105,7 @@ router.post('/signin', async (req, res) => {
     });
 });
 
-router.post('/edit', async (req, res) => {
+router.post('/edit', async(req, res) => {
 
     const { email, password, token, newEmail, newPassword, newFirstname, newLastname } = req.body;
 
@@ -117,28 +128,28 @@ router.post('/edit', async (req, res) => {
     var tokenResult = Auth.TokenCheck(token);
 
     if (tokenResult.Success) {
-        var userCheckResult = Auth.UserCheck(user.userId, tokenResult.token);
-        if (userCheckResult.Success)
-            User.findOne({ 'email': email }, (user) => {
-                if (!user)
-                    return res.status(400).json({
-                        'Success': false,
-                        'message': 'Unathorized access'
-                    });
-                if (user.password !== password)
-                    return res.status(400).json({
-                        'Success': false,
-                        'message': 'Unathorized access'
-                    });
+        User.findOne({ 'email': email }, (err, user) => {
+            if (!user)
+                return res.status(400).json({
+                    'Success': false,
+                    'message': 'Unathorized access'
+                });
+            if (user.password !== password)
+                return res.status(400).json({
+                    'Success': false,
+                    'message': 'Unathorized access'
+                });
 
+            console.log(tokenResult)
+            if (tokenResult.token.userId == user.userId) {
                 if (newEmail)
-                    User.email = newEmail;
+                    user.email = newEmail;
                 if (newPassword)
-                    User.password = newPassword;
+                    user.password = newPassword;
                 if (newFirstname)
-                    User.firstname = newFirstname;
+                    user.firstname = newFirstname;
                 if (newLastname)
-                    User.lastname = newLastname;
+                    user.lastname = newLastname;
 
                 user.save().then((result) => {
                     if (result)
@@ -154,14 +165,14 @@ router.post('/edit', async (req, res) => {
                             'message': error
                         });
                 });
-            });
-        else
-            return res.status(400).json({
-                'Success': false,
-                'message': 'Unathorized access'
-            });
-    }
-    else
+            } else
+                return res.status(400).json({
+                    'Success': false,
+                    'message': 'Unathorized access'
+                });
+        });
+
+    } else
         return res.status(401).json({
             'Success': false,
             'message': 'Unathorized access'
