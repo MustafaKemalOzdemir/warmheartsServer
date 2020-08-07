@@ -102,9 +102,9 @@ router.post('/animal/create', async (req, res) => {
     }
 });
 
-router.post('Adoption/create', async (req, res) => {
+router.post('/adoption/create', async (req, res) => {
 
-    const { token, email, password, date, animalId, addressId} = req.body;
+    const { token, email, password, date, animalId, addressId } = req.body;
     let errorMessage = '';
     if (!token)
         errorMessage += '- token\n';
@@ -159,6 +159,85 @@ router.post('Adoption/create', async (req, res) => {
                         return res.status(201).json({
                             'success': true,
                             'message': 'Adoption Post has been created',
+                            'adoption': result
+                        });
+                }).catch((error) => {
+                    if (error)
+                        return res.status(500).json({
+                            'success': false,
+                            'message': error
+                        });
+                });
+            }
+            else
+                return res.status(400).json({
+                    'Success': false,
+                    'message': 'Unathorized access'
+                });
+        });
+    }
+});
+
+router.post('/mating/create', async (req, res) => {
+
+    const { token, email, password, date, animalId, heat, addressId } = req.body;
+    let errorMessage = '';
+    if (!token)
+        errorMessage += '- token\n';
+    if (!email)
+        errorMessage += '- email\n';
+    if (!password)
+        errorMessage += '- password\n';
+    if (!date)
+        errorMessage += '- date\n';
+    if (!animalId)
+        errorMessage += '- animalId\n';
+    if (!heat)
+        errorMessage += '- heat\n';
+    if (!addressId)
+        errorMessage += '- addressId\n';
+
+    if (errorMessage != '')
+        return res.status(400).json({
+            'success': false,
+            'message': 'Please provide followings:\n' + errorMessage
+        });
+
+    var tokenResult = Auth.TokenCheck(token);
+
+    if (tokenResult.Success) {
+        User.findOne({ 'email': email }, (err, user) => {
+            if (err)
+                return res.status(400).json({
+                    'Success': false,
+                    'message': err
+                });
+            if (!user)
+                return res.status(400).json({
+                    'Success': false,
+                    'message': 'Unathorized access'
+                });
+            if (user.password !== password)
+                return res.status(400).json({
+                    'Success': false,
+                    'message': 'Unathorized access'
+                });
+
+            if (tokenResult.token.userId == user.userId) {
+                let matingPost = new Mating({
+                    'ownerId': user.userId,
+                    'postId': CryptoManager.GenerateId(),
+                    'date': date,
+                    'animalId': animalId,
+                    'heat': heat,
+                    'addressId': addressId
+                });
+                matingPost
+                adoptionPost.save().then((result) => {
+                    if (result)
+                        return res.status(201).json({
+                            'success': true,
+                            'message': 'Mating Post has been created',
                             'adoption': result
                         });
                 }).catch((error) => {
