@@ -3,10 +3,16 @@ const router = express.Router();
 const Auth = require('../CustomModules/Authentication');
 const User = require('../models/User');
 const Animal = require('../models/Animal');
+const Adoption = require('../models/Adoption');
+const Mating = require('../models/Mating');
+const Missing = require('../models/Missing');
 
 
 router.get('/', async (req, res) => {
-    const posts = await Post.find();
+    var posts = [];
+    posts.concat(Adoption.find());
+    posts.concat(Mating.find());
+    posts.concat(Missing.find());
     res.status(200).json(posts);
 });
 
