@@ -15,7 +15,7 @@ module.exports = {
     EncryptText: function(text) {
         return key.encrypt(text, 'base64');
     },
-    GenerateUserId: function() {
+    GenerateId: function() {
         return md5(Date.now());
     },
     EncryptPassword: function(pass) {
