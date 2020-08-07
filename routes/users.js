@@ -5,7 +5,7 @@ let CryptoManager = require('../CustomModules/CryptoManager');
 let Auth = require('../CustomModules/Authentication');
 let User = require('../models/User');
 
-router.get('/', async(req, res) => {
+router.get('/', async (req, res) => {
     User.find((err, users) => {
         return res.status(200).json({
             'sucess': true,
@@ -14,7 +14,7 @@ router.get('/', async(req, res) => {
     });
 });
 
-router.post('/signup', async(req, res) => {
+router.post('/signup', async (req, res) => {
     const { email, firstname, lastname, password } = req.body;
     var firstName = '';
     var lastName = '';
@@ -45,15 +45,18 @@ router.post('/signup', async(req, res) => {
         });
     }
     User.findOne({ 'email': email }, (err, foundUser) => {
-        console.log(foundUser);
-        console.log(err);
+        if (err)
+            return res.status(400).json({
+                'Success': false,
+                'message': err
+            });
         if (foundUser)
             return res.status(409).json({
                 'success': false,
                 'message': 'Email is already registered'
             });
 
-        const generatedUserId = CryptoManager.GenerateUserId();
+        const generatedUserId = CryptoManager.GenerateId();
         if (firstName === '') {
             firstName = 'Guest-';
             lastName = generatedUserId;
@@ -84,7 +87,7 @@ router.post('/signup', async(req, res) => {
     });
 });
 
-router.post('/signin', async(req, res) => {
+router.post('/signin', async (req, res) => {
 
     const { email, password } = req.body;
     console.log(req.body)
@@ -100,6 +103,11 @@ router.post('/signin', async(req, res) => {
         });
 
     User.findOne({ 'email': email }, (err, user) => {
+        if (err)
+            return res.status(400).json({
+                'Success': false,
+                'message': err
+            });
         console.log(user);
         if (!user)
             return res.status(400).json({
@@ -121,7 +129,7 @@ router.post('/signin', async(req, res) => {
     });
 });
 
-router.post('/edit', async(req, res) => {
+router.post('/edit', async (req, res) => {
 
     const { email, password, token, newEmail, newPassword, newFirstname, newLastname } = req.body;
 
@@ -145,6 +153,11 @@ router.post('/edit', async(req, res) => {
 
     if (tokenResult.Success) {
         User.findOne({ 'email': email }, (err, user) => {
+            if (err)
+                return res.status(400).json({
+                    'Success': false,
+                    'message': err
+                });
             if (!user)
                 return res.status(400).json({
                     'Success': false,
@@ -156,7 +169,6 @@ router.post('/edit', async(req, res) => {
                     'message': 'Unathorized access'
                 });
 
-            console.log(tokenResult)
             if (tokenResult.token.userId == user.userId) {
                 if (newEmail)
                     user.email = newEmail;
