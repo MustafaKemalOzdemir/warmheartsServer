@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const animalSchema = require('./Animal').schema;
-const addressSchema = require('./Address').schema;
 
 const missingSchema = mongoose.Schema({
 
@@ -24,11 +22,6 @@ const missingSchema = mongoose.Schema({
         required: true
     },
 
-    animal: {
-        type: animalSchema,
-        required: true
-    },
-
     missingDate: {
         type: String,
         required: true
@@ -39,8 +32,8 @@ const missingSchema = mongoose.Schema({
         required: true
     },
 
-    address: {
-        type: addressSchema,
+    addressId: {
+        type: String,
         required: true
     },
 

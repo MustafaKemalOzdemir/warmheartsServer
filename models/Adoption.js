@@ -24,13 +24,8 @@ const adoptionSchema = mongoose.Schema({
         required: true
     },
 
-    animal: {
-        type: animalSchema,
-        required: true
-    },
-
-    address: {
-        type: addressSchema,
+    addressId: {
+        type: String,
         required: true
     },
 
