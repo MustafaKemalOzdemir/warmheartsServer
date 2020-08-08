@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Auth = require('../CustomModules/Authentication');
 const User = require('../models/User');
-const Animal = require('../models/Animal');
-const Adoption = require('../models/Adoption');
-const Mating = require('../models/Mating');
-const Missing = require('../models/Missing');
+const Animal = require('../models/Animal').model;
+const Adoption = require('../models/Adoption').model;
+const Mating = require('../models/Mating').model;
+const Missing = require('../models/Missing').model;
+let CryptoManager = require('../CustomModules/CryptoManager');
 
 
-router.get('/', async (req, res) => {
+router.get('/', async(req, res) => {
     var posts = [];
     posts.concat(Adoption.find());
     posts.concat(Mating.find());
@@ -16,33 +17,33 @@ router.get('/', async (req, res) => {
     res.status(200).json(posts);
 });
 
-router.post('/animal/create', async (req, res) => {
+router.post('/animal/create', async(req, res) => {
     const { token, email, password, type, race, gender, age, images, source, regularVaccine } = req.body;
     let errorMessage = '';
     if (!token)
-        errorMessage += '- token\n';
+        errorMessage += '- token';
     if (!email)
-        errorMessage += '- email\n';
+        errorMessage += '- email';
     if (!password)
-        errorMessage += '- password\n';
+        errorMessage += '- password';
     if (!type)
-        errorMessage += '- type\n';
+        errorMessage += '- type';
     if (!race)
-        errorMessage += '- race\n';
-    if (!gender)
-        errorMessage += '- gender\n';
-    if (!age)
-        errorMessage += '- age\n';
+        errorMessage += '- race';
+    if (gender === undefined)
+        errorMessage += '- gender';
+    if (age === undefined)
+        errorMessage += '- age';
     if (images.length < 3)
-        errorMessage += '- at least 3 images\n';
-    if (!source)
-        errorMessage += '- source\n';
+        errorMessage += '- at least 3 images'
+    if (source === undefined)
+        errorMessage += '- source';
     if (!regularVaccine)
-        errorMessage += '- regularVaccine\n';
+        errorMessage += '- regularVaccine';
     if (errorMessage != '')
         return res.status(400).json({
             'success': false,
-            'message': 'Please provide followings:\n' + errorMessage
+            'message': 'Please provide followings:' + errorMessage
         });
 
     var tokenResult = Auth.TokenCheck(token);
@@ -92,8 +93,7 @@ router.post('/animal/create', async (req, res) => {
                             'message': error
                         });
                 });
-            }
-            else
+            } else
                 return res.status(400).json({
                     'Success': false,
                     'message': 'Unathorized access'
@@ -102,22 +102,22 @@ router.post('/animal/create', async (req, res) => {
     }
 });
 
-router.post('/adoption/create', async (req, res) => {
+router.post('/adoption/create', async(req, res) => {
 
     const { token, email, password, date, animalId, addressId } = req.body;
     let errorMessage = '';
     if (!token)
-        errorMessage += '- token\n';
+        errorMessage += '- token';
     if (!email)
-        errorMessage += '- email\n';
+        errorMessage += '- email';
     if (!password)
-        errorMessage += '- password\n';
+        errorMessage += '- password';
     if (!date)
-        errorMessage += '- date\n';
+        errorMessage += '- date';
     if (!animalId)
-        errorMessage += '- animalId\n';
+        errorMessage += '- animalId';
     if (!addressId)
-        errorMessage += '- addressId\n';
+        errorMessage += '- addressId';
 
     if (errorMessage != '')
         return res.status(400).json({
@@ -168,8 +168,7 @@ router.post('/adoption/create', async (req, res) => {
                             'message': error
                         });
                 });
-            }
-            else
+            } else
                 return res.status(400).json({
                     'Success': false,
                     'message': 'Unathorized access'
@@ -178,7 +177,7 @@ router.post('/adoption/create', async (req, res) => {
     }
 });
 
-router.post('/mating/create', async (req, res) => {
+router.post('/mating/create', async(req, res) => {
 
     const { token, email, password, date, animalId, heat, addressId } = req.body;
     let errorMessage = '';
@@ -200,7 +199,7 @@ router.post('/mating/create', async (req, res) => {
     if (errorMessage != '')
         return res.status(400).json({
             'success': false,
-            'message': 'Please provide followings:\n' + errorMessage
+            'message': 'Please provide followings:' + errorMessage
         });
 
     var tokenResult = Auth.TokenCheck(token);
@@ -246,8 +245,7 @@ router.post('/mating/create', async (req, res) => {
                             'message': error
                         });
                 });
-            }
-            else
+            } else
                 return res.status(400).json({
                     'Success': false,
                     'message': 'Unathorized access'
@@ -256,31 +254,31 @@ router.post('/mating/create', async (req, res) => {
     }
 });
 
-router.post('/missing/create', async (req, res) => {
+router.post('/missing/create', async(req, res) => {
 
     const { token, email, password, date, animalId, missingDate, collar, addressId } = req.body;
     let errorMessage = '';
     if (!token)
-        errorMessage += '- token\n';
+        errorMessage += '- token';
     if (!email)
-        errorMessage += '- email\n';
+        errorMessage += '- email';
     if (!password)
-        errorMessage += '- password\n';
+        errorMessage += '- password';
     if (!date)
-        errorMessage += '- date\n';
+        errorMessage += '- date';
     if (!animalId)
-        errorMessage += '- animalId\n';
+        errorMessage += '- animalId';
     if (!missingDate)
-        errorMessage += '- missingDate\n';
+        errorMessage += '- missingDate';
     if (!collar)
-        errorMessage += '- collar\n';
+        errorMessage += '- collar';
     if (!addressId)
-        errorMessage += '- addressId\n';
+        errorMessage += '- addressId';
 
     if (errorMessage != '')
         return res.status(400).json({
             'success': false,
-            'message': 'Please provide followings:\n' + errorMessage
+            'message': 'Please provide followings:' + errorMessage
         });
 
     var tokenResult = Auth.TokenCheck(token);
@@ -327,8 +325,7 @@ router.post('/missing/create', async (req, res) => {
                             'message': error
                         });
                 });
-            }
-            else
+            } else
                 return res.status(400).json({
                     'Success': false,
                     'message': 'Unathorized access'
