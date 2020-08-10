@@ -3,7 +3,7 @@ const router = express.Router();
 
 let CryptoManager = require('../CustomModules/CryptoManager');
 let Auth = require('../CustomModules/Authentication');
-let User = require('../models/User');
+let User = require('../models/User').model;
 
 router.get('/', async (req, res) => {
     User.find((err, users) => {
