@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const animalSchema = require('./Animal').schema;
-const addressSchema = require('./Address').schema;
 
 const adoptionSchema = mongoose.Schema({
 
