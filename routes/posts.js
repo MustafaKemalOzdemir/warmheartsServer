@@ -11,6 +11,16 @@ let CryptoManager = require('../CustomModules/CryptoManager');
 
 router.get('/', async(req, res) => {
     var posts = [];
+    Adoption.find()
+    posts.concat(await Adoption.find({}, (error, result) => { return result; }));
+    posts.concat(await Mating.find({}, (error, result) => { return result; }));
+    posts.concat(await Missing.find({}, (error, result) => { return result; }));
+    res.status(200).json(posts);
+});
+
+router.get('/get/adoption', async(req, res) => {
+    var posts = [];
+    Adoption.find()
     posts.concat(await Adoption.find({}, (error, result) => { return result; }));
     posts.concat(await Mating.find({}, (error, result) => { return result; }));
     posts.concat(await Missing.find({}, (error, result) => { return result; }));
@@ -101,7 +111,7 @@ router.get('/missing/get/:id', async(req, res) => {
     });
 });
 
-router.get('user/missing/:id', async(req, res) => {
+router.get('/user/missing/:id', async(req, res) => {
     console.log(req.params);
     Missing.find({ 'ownerId': req.params.id }, (error, missing) => {
         if (error)
@@ -123,7 +133,7 @@ router.get('user/missing/:id', async(req, res) => {
 });
 
 
-router.get('user/adoption/:id', async(req, res) => {
+router.get('/user/adoption/:id', async(req, res) => {
     console.log(req.params);
     Adoption.find({ 'ownerId': req.params.id }, (error, missing) => {
         if (error)
@@ -145,7 +155,7 @@ router.get('user/adoption/:id', async(req, res) => {
 });
 
 
-router.get('user/mating/:id', async(req, res) => {
+router.get('/user/mating/:id', async(req, res) => {
     console.log(req.params);
     Mating.find({ 'ownerId': req.params.id }, (error, missing) => {
         if (error)
