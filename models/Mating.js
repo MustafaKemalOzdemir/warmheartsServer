@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const animal = require('./Animal').schema;
 
 const matingSchema = mongoose.Schema({
 
@@ -17,9 +18,8 @@ const matingSchema = mongoose.Schema({
         required: true
     },
 
-    animalId: {
-        type: String,
-        required: true
+    animal: {
+        type: animal
     },
 
     heat: {
@@ -31,6 +31,7 @@ const matingSchema = mongoose.Schema({
         type: String,
         required: true
     },
+
 
 });
 

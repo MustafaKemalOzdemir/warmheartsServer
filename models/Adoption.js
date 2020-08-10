@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const animal = require('./Animal').schema;
 
 const adoptionSchema = mongoose.Schema({
 
@@ -17,9 +18,8 @@ const adoptionSchema = mongoose.Schema({
         required: true
     },
 
-    animalId: {
-        type: String,
-        required: true
+    animal: {
+        type: animal,
     },
 
     addressId: {

@@ -8,12 +8,12 @@ const addressSchema = mongoose.Schema({
     },
 
     city: {
-        type: Number,
+        type: String,
         required: true
     },
 
     town: {
-        type: Number,
+        type: String,
         required: true
     },
 

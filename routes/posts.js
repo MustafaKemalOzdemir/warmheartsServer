@@ -9,7 +9,7 @@ const Missing = require('../models/Missing').model;
 let CryptoManager = require('../CustomModules/CryptoManager');
 
 
-router.get('/', async (req, res) => {
+router.get('/', async(req, res) => {
     Mating.find({}, (error, matingResult) => {
         Missing.find({}, (error, missingResult) => {
             Adoption.find({}, (error, adoptionResult) => {
@@ -17,13 +17,88 @@ router.get('/', async (req, res) => {
                 posts.concat(matingResult);
                 posts.concat(missingResult);
                 posts.concat(adoptionResult);
-                return res.status(200).json(posts);
+                return res.status(200).json(matingResult);
             });
         });
     });
 });
 
-router.get('/animal/:id/get', async (req, res) => {
+router.get('/adoption', async(req, res) => {
+    Adoption.find({}, (error, searchResult) => {
+        if (error)
+            return res.status(400).json({
+                'Success': false,
+                'message': error
+            });
+        if (searchResult)
+            return res.status(200).json({
+                'Success': true,
+                'result': searchResult
+            });
+        else
+            return res.status(400).json({
+                'Success': false,
+                'message': 'No animal with specified id'
+            });
+    });
+});
+
+router.get('/mating', async(req, res) => {
+    Mating.find({}, (error, searchResult) => {
+        if (error)
+            return res.status(400).json({
+                'Success': false,
+                'message': error
+            });
+        if (searchResult)
+            return res.status(200).json({
+                'Success': true,
+                'result': searchResult
+            });
+        else
+            return res.status(400).json({
+                'Success': false,
+                'message': 'No animal with specified id'
+            });
+    });
+});
+
+router.get('/missing', async(req, res) => {
+    Missing.find({}, async(error, searchResult) => {
+        if (error)
+            return res.status(400).json({
+                'Success': false,
+                'message': error
+            });
+        if (searchResult) {
+            let answer = [];
+            for (var i = 0; i < searchResult.length; i++) {
+                var obj = searchResult[i];
+                await Animal.find({ 'animalId': obj['animalId'] }, (error, result) => {
+                    let updated = JSON.parse(JSON.stringify(obj))
+                    updated['animal'] = result;
+                    answer.push(updated);
+                });
+            }
+            return res.status(200).json({
+                'Success': true,
+                'result': answer
+            });
+        } else {
+            return res.status(400).json({
+                'Success': false,
+                'message': 'No animal with specified id'
+            });
+
+        }
+
+
+
+
+    });
+});
+
+router.get('/animal/:id/get', async(req, res) => {
     console.log(req.params);
     Animal.findOne({ 'animalId': req.params.id }, (error, animal) => {
         if (error)
@@ -43,7 +118,8 @@ router.get('/animal/:id/get', async (req, res) => {
             });
     });
 });
-router.get('/adoption/:id/get', async (req, res) => {
+
+router.get('/adoption/:id/get', async(req, res) => {
     console.log(req.params);
     Adoption.findOne({ 'animalId': req.params.id }, (error, adoption) => {
         if (error)
@@ -63,7 +139,7 @@ router.get('/adoption/:id/get', async (req, res) => {
             });
     });
 });
-router.get('/mating/:id/get', async (req, res) => {
+router.get('/mating/:id/get', async(req, res) => {
     console.log(req.params);
     Mating.findOne({ 'animalId': req.params.id }, (error, mating) => {
         if (error)
@@ -83,7 +159,7 @@ router.get('/mating/:id/get', async (req, res) => {
             });
     });
 });
-router.get('/missing/:id/get', async (req, res) => {
+router.get('/missing/:id/get', async(req, res) => {
     console.log(req.params);
     Missing.findOne({ 'animalId': req.params.id }, (error, missing) => {
         if (error)
@@ -104,7 +180,7 @@ router.get('/missing/:id/get', async (req, res) => {
     });
 });
 
-router.get('/user/:id/animals/get', async (req, res) => {
+router.get('/user/:id/animals/get', async(req, res) => {
     console.log(req.params);
     Animal.find({ 'ownerId': req.params.id }, (error, animals) => {
         if (error)
@@ -118,7 +194,7 @@ router.get('/user/:id/animals/get', async (req, res) => {
         });
     });
 });
-router.get('/user/:id/adoptions/get', async (req, res) => {
+router.get('/user/:id/adoptions/get', async(req, res) => {
     console.log(req.params);
     Adoption.find({ 'ownerId': req.params.id }, (error, adoptions) => {
         if (error)
@@ -132,7 +208,7 @@ router.get('/user/:id/adoptions/get', async (req, res) => {
         });
     });
 });
-router.get('/user/:id/matings/get', async (req, res) => {
+router.get('/user/:id/matings/get', async(req, res) => {
     console.log(req.params);
     Mating.find({ 'ownerId': req.params.id }, (error, matings) => {
         if (error)
@@ -146,7 +222,7 @@ router.get('/user/:id/matings/get', async (req, res) => {
         });
     });
 });
-router.get('/user/:id/missings/get', async (req, res) => {
+router.get('/user/:id/missings/get', async(req, res) => {
     console.log(req.params);
     Missing.find({ 'ownerId': req.params.id }, (error, missings) => {
         if (error)
@@ -161,7 +237,7 @@ router.get('/user/:id/missings/get', async (req, res) => {
     });
 });
 
-router.post('/animal/create', async (req, res) => {
+router.post('/animal/create', async(req, res) => {
     const { token, email, password, type, race, gender, age, images, source, regularVaccine } = req.body;
     let errorMessage = '';
     if (!token)
@@ -245,7 +321,7 @@ router.post('/animal/create', async (req, res) => {
         });
     }
 });
-router.post('/adoption/create', async (req, res) => {
+router.post('/adoption/create', async(req, res) => {
 
     const { token, email, password, date, animalId, addressId } = req.body;
     let errorMessage = '';
@@ -319,7 +395,7 @@ router.post('/adoption/create', async (req, res) => {
         });
     }
 });
-router.post('/mating/create', async (req, res) => {
+router.post('/mating/create', async(req, res) => {
 
     const { token, email, password, date, animalId, heat, addressId } = req.body;
     let errorMessage = '';
@@ -395,7 +471,7 @@ router.post('/mating/create', async (req, res) => {
         });
     }
 });
-router.post('/missing/create', async (req, res) => {
+router.post('/missing/create', async(req, res) => {
 
     const { token, email, password, date, animalId, missingDate, collar, addressId } = req.body;
     let errorMessage = '';
