@@ -46,7 +46,7 @@ router.get('/adoption/get/:id', async (req, res) => {
                 'Success': false,
                 'message': error
             });
-        if (animal)
+        if (adoption)
             return res.status(200).json({
                 'Success': true,
                 'adoption': adoption
@@ -55,6 +55,27 @@ router.get('/adoption/get/:id', async (req, res) => {
             return res.status(400).json({
                 'Success': false,
                 'message': 'No adoption post with specified id'
+            });
+    });
+});
+
+router.get('/mating/get/:id', async (req, res) => {
+    console.log(req.params);
+    Mating.findOne({ 'animalId': req.params.id }, (error, mating) => {
+        if (error)
+            return res.status(400).json({
+                'Success': false,
+                'message': error
+            });
+        if (mating)
+            return res.status(200).json({
+                'Success': true,
+                'mating': mating
+            });
+        else
+            return res.status(400).json({
+                'Success': false,
+                'message': 'No mating post with specified id'
             });
     });
 });
