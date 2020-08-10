@@ -80,6 +80,27 @@ router.get('/mating/get/:id', async (req, res) => {
     });
 });
 
+router.get('/missing/get/:id', async (req, res) => {
+    console.log(req.params);
+    Missing.findOne({ 'animalId': req.params.id }, (error, missing) => {
+        if (error)
+            return res.status(400).json({
+                'Success': false,
+                'message': error
+            });
+        if (missing)
+            return res.status(200).json({
+                'Success': true,
+                'missing': missing
+            });
+        else
+            return res.status(400).json({
+                'Success': false,
+                'message': 'No missing post with specified id'
+            });
+    });
+});
+
 router.post('/animal/create', async (req, res) => {
     const { token, email, password, type, race, gender, age, images, source, regularVaccine } = req.body;
     let errorMessage = '';
