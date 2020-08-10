@@ -9,15 +9,35 @@ const Missing = require('../models/Missing').model;
 let CryptoManager = require('../CustomModules/CryptoManager');
 
 
-router.get('/', async(req, res) => {
+router.get('/', async (req, res) => {
     var posts = [];
     posts.concat(Adoption.find());
     posts.concat(Mating.find());
     posts.concat(Missing.find());
     res.status(200).json(posts);
 });
+router.get('/animal/get/:id', async (req, res) => {
+    console.log(req.params);
+    Animal.findOne({ 'animalId': req.params.id }, (error, animal) => {
+        if (error)
+            return res.status(400).json({
+                'Success': false,
+                'message': error
+            });
+        if (animal)
+            return res.status(200).json({
+                'Success': true,
+                'animal': animal
+            });
+        else
+            return res.status(400).json({
+                'Success': false,
+                'message': 'No animal with specified id'
+            });
+    });
+});
 
-router.post('/animal/create', async(req, res) => {
+router.post('/animal/create', async (req, res) => {
     const { token, email, password, type, race, gender, age, images, source, regularVaccine } = req.body;
     let errorMessage = '';
     if (!token)
@@ -102,7 +122,7 @@ router.post('/animal/create', async(req, res) => {
     }
 });
 
-router.post('/adoption/create', async(req, res) => {
+router.post('/adoption/create', async (req, res) => {
 
     const { token, email, password, date, animalId, addressId } = req.body;
     let errorMessage = '';
@@ -177,7 +197,7 @@ router.post('/adoption/create', async(req, res) => {
     }
 });
 
-router.post('/mating/create', async(req, res) => {
+router.post('/mating/create', async (req, res) => {
 
     const { token, email, password, date, animalId, heat, addressId } = req.body;
     let errorMessage = '';
@@ -254,7 +274,7 @@ router.post('/mating/create', async(req, res) => {
     }
 });
 
-router.post('/missing/create', async(req, res) => {
+router.post('/missing/create', async (req, res) => {
 
     const { token, email, password, date, animalId, missingDate, collar, addressId } = req.body;
     let errorMessage = '';
