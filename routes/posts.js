@@ -9,7 +9,21 @@ const Missing = require('../models/Missing').model;
 let CryptoManager = require('../CustomModules/CryptoManager');
 
 
-router.get('/', async(req, res) => {
+router.get('/', async (req, res) => {
+    Mating.find({}, (error, matingResult) => {
+        Missing.find({}, (error, missingResult) => {
+            Adoption.find({}, (error, adoptionResult) => {
+                var posts = [];
+                posts.concat(matingResult);
+                posts.concat(missingResult);
+                posts.concat(adoptionResult);
+                return res.status(200).json(posts);
+            });
+        });
+    });
+});
+
+router.get('/get/adoption', async (req, res) => {
     var posts = [];
     Adoption.find()
     posts.concat(await Adoption.find({}, (error, result) => { return result; }));
@@ -18,16 +32,7 @@ router.get('/', async(req, res) => {
     res.status(200).json(posts);
 });
 
-router.get('/get/adoption', async(req, res) => {
-    var posts = [];
-    Adoption.find()
-    posts.concat(await Adoption.find({}, (error, result) => { return result; }));
-    posts.concat(await Mating.find({}, (error, result) => { return result; }));
-    posts.concat(await Missing.find({}, (error, result) => { return result; }));
-    res.status(200).json(posts);
-});
-
-router.get('/animal/get/:id', async(req, res) => {
+router.get('/animal/get/:id', async (req, res) => {
     console.log(req.params);
     Animal.findOne({ 'animalId': req.params.id }, (error, animal) => {
         if (error)
@@ -48,7 +53,7 @@ router.get('/animal/get/:id', async(req, res) => {
     });
 });
 
-router.get('/adoption/get/:id', async(req, res) => {
+router.get('/adoption/get/:id', async (req, res) => {
     console.log(req.params);
     Adoption.findOne({ 'animalId': req.params.id }, (error, adoption) => {
         if (error)
@@ -69,7 +74,7 @@ router.get('/adoption/get/:id', async(req, res) => {
     });
 });
 
-router.get('/mating/get/:id', async(req, res) => {
+router.get('/mating/get/:id', async (req, res) => {
     console.log(req.params);
     Mating.findOne({ 'animalId': req.params.id }, (error, mating) => {
         if (error)
@@ -90,7 +95,7 @@ router.get('/mating/get/:id', async(req, res) => {
     });
 });
 
-router.get('/missing/get/:id', async(req, res) => {
+router.get('/missing/get/:id', async (req, res) => {
     console.log(req.params);
     Missing.findOne({ 'animalId': req.params.id }, (error, missing) => {
         if (error)
@@ -111,7 +116,7 @@ router.get('/missing/get/:id', async(req, res) => {
     });
 });
 
-router.get('/user/missing/:id', async(req, res) => {
+router.get('/user/missing/:id', async (req, res) => {
     console.log(req.params);
     Missing.find({ 'ownerId': req.params.id }, (error, missing) => {
         if (error)
@@ -133,7 +138,7 @@ router.get('/user/missing/:id', async(req, res) => {
 });
 
 
-router.get('/user/adoption/:id', async(req, res) => {
+router.get('/user/adoption/:id', async (req, res) => {
     console.log(req.params);
     Adoption.find({ 'ownerId': req.params.id }, (error, missing) => {
         if (error)
@@ -155,7 +160,7 @@ router.get('/user/adoption/:id', async(req, res) => {
 });
 
 
-router.get('/user/mating/:id', async(req, res) => {
+router.get('/user/mating/:id', async (req, res) => {
     console.log(req.params);
     Mating.find({ 'ownerId': req.params.id }, (error, missing) => {
         if (error)
@@ -176,7 +181,7 @@ router.get('/user/mating/:id', async(req, res) => {
     });
 });
 
-router.post('/animal/create', async(req, res) => {
+router.post('/animal/create', async (req, res) => {
     const { token, email, password, type, race, gender, age, images, source, regularVaccine } = req.body;
     let errorMessage = '';
     if (!token)
@@ -261,7 +266,7 @@ router.post('/animal/create', async(req, res) => {
     }
 });
 
-router.post('/adoption/create', async(req, res) => {
+router.post('/adoption/create', async (req, res) => {
 
     const { token, email, password, date, animalId, addressId } = req.body;
     let errorMessage = '';
@@ -336,7 +341,7 @@ router.post('/adoption/create', async(req, res) => {
     }
 });
 
-router.post('/mating/create', async(req, res) => {
+router.post('/mating/create', async (req, res) => {
 
     const { token, email, password, date, animalId, heat, addressId } = req.body;
     let errorMessage = '';
@@ -413,7 +418,7 @@ router.post('/mating/create', async(req, res) => {
     }
 });
 
-router.post('/missing/create', async(req, res) => {
+router.post('/missing/create', async (req, res) => {
 
     const { token, email, password, date, animalId, missingDate, collar, addressId } = req.body;
     let errorMessage = '';
