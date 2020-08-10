@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
     posts.concat(Missing.find());
     res.status(200).json(posts);
 });
+
 router.get('/animal/get/:id', async (req, res) => {
     console.log(req.params);
     Animal.findOne({ 'animalId': req.params.id }, (error, animal) => {
@@ -33,6 +34,27 @@ router.get('/animal/get/:id', async (req, res) => {
             return res.status(400).json({
                 'Success': false,
                 'message': 'No animal with specified id'
+            });
+    });
+});
+
+router.get('/adoption/get/:id', async (req, res) => {
+    console.log(req.params);
+    Adoption.findOne({ 'animalId': req.params.id }, (error, adoption) => {
+        if (error)
+            return res.status(400).json({
+                'Success': false,
+                'message': error
+            });
+        if (animal)
+            return res.status(200).json({
+                'Success': true,
+                'adoption': adoption
+            });
+        else
+            return res.status(400).json({
+                'Success': false,
+                'message': 'No adoption post with specified id'
             });
     });
 });
