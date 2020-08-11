@@ -21,12 +21,12 @@ var upload = multer({ storage: storage });
 
 router.get('/', async (req, res, next) => {
     Mating.find({}, (error, matingResult) => {
-        Missing.find({}, (error, missingResult) => {
-            Adoption.find({}, (error, adoptionResult) => {
+        Missing.find({}, (erro, missingResult) => {
+            Adoption.find({}, (err, adoptionResult) => {
                 var posts = [];
-                posts.concat(matingResult);
-                posts.concat(missingResult);
-                posts.concat(adoptionResult);
+                posts = posts.concat(matingResult);
+                posts = posts.concat(missingResult);
+                posts = posts.concat(adoptionResult);
                 return res.status(200).json(matingResult);
             });
         });
