@@ -19,7 +19,7 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     Mating.find({}, (error, matingResult) => {
         Missing.find({}, (error, missingResult) => {
             Adoption.find({}, (error, adoptionResult) => {
@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
     });
 });
 
-router.get('/adoption', async (req, res) => {
+router.get('/adoption', async (req, res, next) => {
     Adoption.find({}, (error, searchResult) => {
         if (error)
             return res.status(400).json({
@@ -43,17 +43,11 @@ router.get('/adoption', async (req, res) => {
         if (searchResult)
             return res.status(200).json({
                 'Success': true,
-                'result': searchResult
-            });
-        else
-            return res.status(400).json({
-                'Success': false,
-                'message': 'No animal with specified id'
+                'adoptions': searchResult
             });
     });
 });
-
-router.get('/mating', async (req, res) => {
+router.get('/mating', async (req, res, next) => {
     Mating.find({}, (error, searchResult) => {
         if (error)
             return res.status(400).json({
@@ -63,52 +57,26 @@ router.get('/mating', async (req, res) => {
         if (searchResult)
             return res.status(200).json({
                 'Success': true,
-                'result': searchResult
-            });
-        else
-            return res.status(400).json({
-                'Success': false,
-                'message': 'No animal with specified id'
+                'matings': searchResult
             });
     });
 });
-
-router.get('/missing', async (req, res) => {
+router.get('/missing', async (req, res, next) => {
     Missing.find({}, async (error, searchResult) => {
         if (error)
             return res.status(400).json({
                 'Success': false,
                 'message': error
             });
-        if (searchResult) {
-            let answer = [];
-            for (var i = 0; i < searchResult.length; i++) {
-                var obj = searchResult[i];
-                await Animal.find({ 'animalId': obj['animalId'] }, (error, result) => {
-                    let updated = JSON.parse(JSON.stringify(obj))
-                    updated['animal'] = result;
-                    answer.push(updated);
-                });
-            }
+        if (searchResult)
             return res.status(200).json({
                 'Success': true,
-                'result': answer
+                'misings': searchResult
             });
-        } else {
-            return res.status(400).json({
-                'Success': false,
-                'message': 'No animal with specified id'
-            });
-
-        }
-
-
-
-
     });
 });
 
-router.get('/adoption/:id/get', async (req, res) => {
+router.get('/adoption/:id', async (req, res, next) => {
     console.log(req.params);
     Adoption.findOne({ 'animalId': req.params.id }, (error, adoption) => {
         if (error)
@@ -128,7 +96,7 @@ router.get('/adoption/:id/get', async (req, res) => {
             });
     });
 });
-router.get('/mating/:id/get', async (req, res) => {
+router.get('/mating/:id', async (req, res, next) => {
     console.log(req.params);
     Mating.findOne({ 'animalId': req.params.id }, (error, mating) => {
         if (error)
@@ -148,7 +116,7 @@ router.get('/mating/:id/get', async (req, res) => {
             });
     });
 });
-router.get('/missing/:id/get', async (req, res) => {
+router.get('/missing/:id', async (req, res, next) => {
     console.log(req.params);
     Missing.findOne({ 'animalId': req.params.id }, (error, missing) => {
         if (error)
@@ -169,7 +137,143 @@ router.get('/missing/:id/get', async (req, res) => {
     });
 });
 
-router.get('/user/:id/adoptions/get', async (req, res) => {
+router.delete('/adoption/:id', async (req, res, next) => {
+    const { token, email, password, } = req.body;
+    let errorMessage = '';
+    if (!token)
+        errorMessage += '- token';
+    if (!email)
+        errorMessage += '- email';
+    if (!password)
+        errorMessage += '- password';
+    User.findOne({ 'email': email }, (err, user) => {
+        if (err)
+            return res.status(400).json({
+                'Success': false,
+                'message': err
+            });
+        if (!user)
+            return res.status(400).json({
+                'Success': false,
+                'message': 'Unathorized access'
+            });
+        if (user.password !== password)
+            return res.status(400).json({
+                'Success': false,
+                'message': 'Unathorized access'
+            });
+
+        if (tokenResult.token.userId == user.userId) {
+            Adoption.deleteOne({ 'postId': req.params.id, 'ownerId': user.userId }, (error) => {
+                if (error)
+                    return res.status(400).json({
+                        'Success': false,
+                        'message': 'Unathorized access'
+                    });;
+                    return res.status(200).json({
+                        'Success': true,
+                        'message': 'Adoption post has been successfully deleted'
+                    });;
+            });
+        } else
+            return res.status(400).json({
+                'Success': false,
+                'message': 'Unathorized access'
+            });
+    });
+});
+router.delete('/mating/:id', async (req, res, next) => {
+    const { token, email, password, } = req.body;
+    let errorMessage = '';
+    if (!token)
+        errorMessage += '- token';
+    if (!email)
+        errorMessage += '- email';
+    if (!password)
+        errorMessage += '- password';
+    User.findOne({ 'email': email }, (err, user) => {
+        if (err)
+            return res.status(400).json({
+                'Success': false,
+                'message': err
+            });
+        if (!user)
+            return res.status(400).json({
+                'Success': false,
+                'message': 'Unathorized access'
+            });
+        if (user.password !== password)
+            return res.status(400).json({
+                'Success': false,
+                'message': 'Unathorized access'
+            });
+
+        if (tokenResult.token.userId == user.userId) {
+            Mating.deleteOne({ 'postId': req.params.id, 'ownerId': user.userId }, (error) => {
+                if (error)
+                    return res.status(400).json({
+                        'Success': false,
+                        'message': 'Unathorized access'
+                    });;
+                    return res.status(200).json({
+                        'Success': true,
+                        'message': 'Mating post has been successfully deleted'
+                    });;
+            });
+        } else
+            return res.status(400).json({
+                'Success': false,
+                'message': 'Unathorized access'
+            });
+    });
+});
+router.delete('/missing/:id', async (req, res, next) => {
+    const { token, email, password, } = req.body;
+    let errorMessage = '';
+    if (!token)
+        errorMessage += '- token';
+    if (!email)
+        errorMessage += '- email';
+    if (!password)
+        errorMessage += '- password';
+    User.findOne({ 'email': email }, (err, user) => {
+        if (err)
+            return res.status(400).json({
+                'Success': false,
+                'message': err
+            });
+        if (!user)
+            return res.status(400).json({
+                'Success': false,
+                'message': 'Unathorized access'
+            });
+        if (user.password !== password)
+            return res.status(400).json({
+                'Success': false,
+                'message': 'Unathorized access'
+            });
+
+        if (tokenResult.token.userId == user.userId) {
+            Missing.deleteOne({ 'postId': req.params.id, 'ownerId': user.userId }, (error) => {
+                if (error)
+                    return res.status(400).json({
+                        'Success': false,
+                        'message': 'Unathorized access'
+                    });;
+                    return res.status(200).json({
+                        'Success': true,
+                        'message': 'Missing post has been successfully deleted'
+                    });;
+            });
+        } else
+            return res.status(400).json({
+                'Success': false,
+                'message': 'Unathorized access'
+            });
+    });
+});
+
+router.get('/user/:id/adoptions', async (req, res, next) => {
     console.log(req.params);
     Adoption.find({ 'ownerId': req.params.id }, (error, adoptions) => {
         if (error)
@@ -183,7 +287,7 @@ router.get('/user/:id/adoptions/get', async (req, res) => {
         });
     });
 });
-router.get('/user/:id/matings/get', async (req, res) => {
+router.get('/user/:id/matings', async (req, res, next) => {
     console.log(req.params);
     Mating.find({ 'ownerId': req.params.id }, (error, matings) => {
         if (error)
@@ -197,7 +301,7 @@ router.get('/user/:id/matings/get', async (req, res) => {
         });
     });
 });
-router.get('/user/:id/missings/get', async (req, res) => {
+router.get('/user/:id/missings', async (req, res, next) => {
     console.log(req.params);
     Missing.find({ 'ownerId': req.params.id }, (error, missings) => {
         if (error)
@@ -212,7 +316,7 @@ router.get('/user/:id/missings/get', async (req, res) => {
     });
 });
 
-router.post('/adoption/create', upload.single('fileToUpload'), async (req, res) => {
+router.post('/adoption', upload.single('fileToUpload'), async (req, res, next) => {
 
     const { token, email, password, date, animal, addressId } = req.body;
     let errorMessage = '';
@@ -287,7 +391,7 @@ router.post('/adoption/create', upload.single('fileToUpload'), async (req, res) 
         });
     }
 });
-router.post('/mating/create', upload.single('fileToUpload'), async (req, res) => {
+router.post('/mating', upload.single('fileToUpload'), async (req, res, next) => {
 
     const { token, email, password, date, animal, heat, addressId } = req.body;
     let errorMessage = '';
@@ -365,7 +469,7 @@ router.post('/mating/create', upload.single('fileToUpload'), async (req, res) =>
         });
     }
 });
-router.post('/missing/create', upload.single('fileToUpload'), async (req, res) => {
+router.post('/missing', upload.single('fileToUpload'), async (req, res, next) => {
 
     const { token, email, password, date, animalId, missingDate, collar, addressId } = req.body;
     let errorMessage = '';
