@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const animal = require('./Animal').schema;
-const address = require('./Address').schema;
 
 const adoptionSchema = mongoose.Schema({
 
@@ -19,13 +17,54 @@ const adoptionSchema = mongoose.Schema({
         required: true
     },
 
-    animal: {
-        type: animal,
+    //Kedi
+    type: {
+        type: String,
+        required: true
+    },
+    //Tekir kedi
+    race: {
+        type: String,
+        required: true
+    },
+    //dişi
+    gender: {
+        type: Number,
         required: true
     },
 
-    address: {
-        type: address,
+    age: {
+        type: String,
+        required: true
+    },
+
+    image: {
+        type: String,
+        required: true
+    },
+
+    source: {
+        type: Number,
+        required: true
+    },
+    //Aşı
+    regularVaccine: {
+        type: Boolean,
+    },
+
+    city: {
+        type: String,
+        required: true
+    },
+
+    town: {
+        type: String,
+        required: true
+    },
+
+    addressDetail: {
+        type: String,
+        required: true
     },
 
 });

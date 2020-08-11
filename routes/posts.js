@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Auth = require('../CustomModules/Authentication');
 const User = require('../models/User').model;
-const Animal = require('../models/Animal').model;
 const Adoption = require('../models/Adoption').model;
 const Mating = require('../models/Mating').model;
 const Missing = require('../models/Missing').model;
@@ -13,6 +12,7 @@ var storage = multer.diskStorage({
         cb(null, 'public/uploads');
     },
     filename: function(req, file, cb) {
+        console.log(file);
         cb(null, 'Image-' + Date.now() + '.jpeg');
     }
 });
