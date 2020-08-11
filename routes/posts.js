@@ -8,10 +8,10 @@ const Missing = require('../models/Missing').model;
 let CryptoManager = require('../CustomModules/CryptoManager');
 var multer = require('multer');
 var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(null, 'public/uploads');
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         console.log(file);
         cb(null, 'Image-' + Date.now() + '.jpeg');
     }
@@ -20,7 +20,7 @@ var upload = multer({ storage: storage });
 var path = require('path');
 var appDir = path.dirname(require.main.filename)
 
-router.get('/uploads/:name', async(req, res) => {
+router.get('/uploads/:name', async (req, res) => {
     res.sendFile(appDir + '/public/uploads/' + decodeURIComponent(req.params.name));
 });
 
@@ -175,10 +175,10 @@ router.delete('/adoption/:id', async (req, res, next) => {
                         'Success': false,
                         'message': 'Unathorized access'
                     });;
-                    return res.status(200).json({
-                        'Success': true,
-                        'message': 'Adoption post has been successfully deleted'
-                    });;
+                return res.status(200).json({
+                    'Success': true,
+                    'message': 'Adoption post has been successfully deleted'
+                });;
             });
         } else
             return res.status(400).json({
@@ -220,10 +220,10 @@ router.delete('/mating/:id', async (req, res, next) => {
                         'Success': false,
                         'message': 'Unathorized access'
                     });;
-                    return res.status(200).json({
-                        'Success': true,
-                        'message': 'Mating post has been successfully deleted'
-                    });;
+                return res.status(200).json({
+                    'Success': true,
+                    'message': 'Mating post has been successfully deleted'
+                });;
             });
         } else
             return res.status(400).json({
@@ -265,10 +265,10 @@ router.delete('/missing/:id', async (req, res, next) => {
                         'Success': false,
                         'message': 'Unathorized access'
                     });;
-                    return res.status(200).json({
-                        'Success': true,
-                        'message': 'Missing post has been successfully deleted'
-                    });;
+                return res.status(200).json({
+                    'Success': true,
+                    'message': 'Missing post has been successfully deleted'
+                });;
             });
         } else
             return res.status(400).json({
@@ -323,7 +323,7 @@ router.get('/user/:id/missings', async (req, res, next) => {
 
 router.post('/adoption', upload.single('fileToUpload'), async (req, res, next) => {
 
-    const { token, email, password, date, animal, addressId } = req.body;
+    const { token, email, password } = req.body;
     let errorMessage = '';
     if (!token)
         errorMessage += '- token';
@@ -331,12 +331,6 @@ router.post('/adoption', upload.single('fileToUpload'), async (req, res, next) =
         errorMessage += '- email';
     if (!password)
         errorMessage += '- password';
-    if (!date)
-        errorMessage += '- date';
-    if (!animal)
-        errorMessage += '- animal';
-    if (!addressId)
-        errorMessage += '- addressId';
 
     if (errorMessage != '')
         return res.status(400).json({
@@ -398,7 +392,7 @@ router.post('/adoption', upload.single('fileToUpload'), async (req, res, next) =
 });
 router.post('/mating', upload.single('fileToUpload'), async (req, res, next) => {
 
-    const { token, email, password, date, animal, heat, addressId } = req.body;
+    const { token, email, password} = req.body;
     let errorMessage = '';
     if (!token)
         errorMessage += '- token\n';
@@ -406,14 +400,6 @@ router.post('/mating', upload.single('fileToUpload'), async (req, res, next) => 
         errorMessage += '- email\n';
     if (!password)
         errorMessage += '- password\n';
-    if (!date)
-        errorMessage += '- date\n';
-    if (!animal)
-        errorMessage += '- animal\n';
-    if (!heat)
-        errorMessage += '- heat\n';
-    if (!addressId)
-        errorMessage += '- addressId\n';
 
     if (errorMessage != '')
         return res.status(400).json({
@@ -476,7 +462,7 @@ router.post('/mating', upload.single('fileToUpload'), async (req, res, next) => 
 });
 router.post('/missing', upload.single('fileToUpload'), async (req, res, next) => {
 
-    const { token, email, password, date, animalId, missingDate, collar, addressId } = req.body;
+    const { token, email, password } = req.body;
     let errorMessage = '';
     if (!token)
         errorMessage += '- token';
@@ -484,16 +470,6 @@ router.post('/missing', upload.single('fileToUpload'), async (req, res, next) =>
         errorMessage += '- email';
     if (!password)
         errorMessage += '- password';
-    if (!date)
-        errorMessage += '- date';
-    if (!animal)
-        errorMessage += '- animal';
-    if (!missingDate)
-        errorMessage += '- missingDate';
-    if (!collar)
-        errorMessage += '- collar';
-    if (!addressId)
-        errorMessage += '- addressId';
 
     if (errorMessage != '')
         return res.status(400).json({
