@@ -5,6 +5,8 @@ const postRoute = require('./routes/posts');
 const userRoute = require('./routes/users');
 const bodyParser = require('body-parser');
 const cryptoManager = require('./CustomModules/CryptoManager');
+var multer = require('multer');
+var upload = multer({ dest: './uploads' });
 require('dotenv/config');
 
 app.use(bodyParser.json());

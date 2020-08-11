@@ -7,11 +7,6 @@ const animalSchema = mongoose.Schema({
         required: true
     },
 
-    animalId: {
-        type: String,
-        required: true
-    },
-
     //Kedi
     type: {
         type: String,
@@ -33,9 +28,10 @@ const animalSchema = mongoose.Schema({
         required: true
     },
 
-    images: [{
+    image: {
         type: String,
-    }],
+        required: true
+    },
 
     source: {
         type: Number,

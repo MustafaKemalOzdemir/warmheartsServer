@@ -19,7 +19,8 @@ const matingSchema = mongoose.Schema({
     },
 
     animal: {
-        type: animal
+        type: animal,
+        required: true
     },
 
     heat: {
@@ -31,8 +32,6 @@ const matingSchema = mongoose.Schema({
         type: String,
         required: true
     },
-
-
 });
 
 

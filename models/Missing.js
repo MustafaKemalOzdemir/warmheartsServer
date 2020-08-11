@@ -21,6 +21,7 @@ const missingSchema = mongoose.Schema({
 
     animal: {
         type: animal,
+        required: true
     },
 
     missingDate: {

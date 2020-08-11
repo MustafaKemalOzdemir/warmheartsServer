@@ -20,6 +20,7 @@ const adoptionSchema = mongoose.Schema({
 
     animal: {
         type: animal,
+        required: true
     },
 
     addressId: {
