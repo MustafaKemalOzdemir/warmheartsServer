@@ -11,10 +11,8 @@ require('dotenv/config');
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-    res.json({
-        message: cryptoManager.encryptText('MkL')
-    });
+app.get('/images/:name', async (req, res) => {
+    res.sendFile(__dirname + '/public/uploads/' + decodeURIComponent(req.params.name));
 });
 
 app.use('/posts', postRoute);

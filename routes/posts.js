@@ -17,12 +17,6 @@ var storage = multer.diskStorage({
     }
 });
 var upload = multer({ storage: storage });
-var path = require('path');
-var appDir = path.dirname(require.main.filename)
-
-router.get('/uploads/:name', async (req, res) => {
-    res.sendFile(appDir + '/public/uploads/' + decodeURIComponent(req.params.name));
-});
 
 router.get('/', async (req, res, next) => {
     Mating.find({}, (error, matingResult) => {
