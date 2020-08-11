@@ -323,7 +323,7 @@ router.get('/user/:id/missings', async (req, res, next) => {
 
 router.post('/adoption', upload.single('fileToUpload'), async (req, res, next) => {
 
-    const { token, email, password } = req.body;
+    const { token, email, password, adoption } = req.body;
     let errorMessage = '';
     if (!token)
         errorMessage += '- token';
@@ -331,6 +331,8 @@ router.post('/adoption', upload.single('fileToUpload'), async (req, res, next) =
         errorMessage += '- email';
     if (!password)
         errorMessage += '- password';
+    if (!adoption)
+        errorMessage += '- adoption';
 
     if (errorMessage != '')
         return res.status(400).json({
@@ -359,14 +361,9 @@ router.post('/adoption', upload.single('fileToUpload'), async (req, res, next) =
                 });
 
             if (tokenResult.token.userId == user.userId) {
-                animal.image = req.file ? "uploads\\" + req.file.filename : "uploads\\noImage.jpg";
-                let adoptionPost = new Adoption({
-                    'ownerId': user.userId,
-                    'postId': CryptoManager.GenerateId(),
-                    'date': date,
-                    'animal': animal,
-                    'addressId': addressId
-                });
+                adoption.image = req.file ? req.file.filename : "noImage.jpg";
+                adoption.postId = CryptoManager.GenerateId();
+                let adoptionPost = new Adoption(adoption);
 
                 adoptionPost.save().then((result) => {
                     if (result)
@@ -392,7 +389,7 @@ router.post('/adoption', upload.single('fileToUpload'), async (req, res, next) =
 });
 router.post('/mating', upload.single('fileToUpload'), async (req, res, next) => {
 
-    const { token, email, password} = req.body;
+    const { token, email, password, mating } = req.body;
     let errorMessage = '';
     if (!token)
         errorMessage += '- token\n';
@@ -400,6 +397,8 @@ router.post('/mating', upload.single('fileToUpload'), async (req, res, next) => 
         errorMessage += '- email\n';
     if (!password)
         errorMessage += '- password\n';
+    if (!mating)
+        errorMessage += '- mating';
 
     if (errorMessage != '')
         return res.status(400).json({
@@ -428,16 +427,9 @@ router.post('/mating', upload.single('fileToUpload'), async (req, res, next) => 
                 });
 
             if (tokenResult.token.userId == user.userId) {
-                animal.image = req.file ? "uploads\\" + req.file.filename : "uploads\\noImage.jpg";
-
-                let matingPost = new Mating({
-                    'ownerId': user.userId,
-                    'postId': CryptoManager.GenerateId(),
-                    'date': date,
-                    'animal': animal,
-                    'heat': heat,
-                    'addressId': addressId
-                });
+                mating.image = req.file ? req.file.filename : "noImage.jpg";
+                mating.postId = CryptoManager.GenerateId();
+                let matingPost = new Mating(mating);
                 matingPost.save().then((result) => {
                     if (result)
                         return res.status(201).json({
@@ -462,7 +454,7 @@ router.post('/mating', upload.single('fileToUpload'), async (req, res, next) => 
 });
 router.post('/missing', upload.single('fileToUpload'), async (req, res, next) => {
 
-    const { token, email, password } = req.body;
+    const { token, email, password, missing } = req.body;
     let errorMessage = '';
     if (!token)
         errorMessage += '- token';
@@ -470,6 +462,8 @@ router.post('/missing', upload.single('fileToUpload'), async (req, res, next) =>
         errorMessage += '- email';
     if (!password)
         errorMessage += '- password';
+    if (!missing)
+        errorMessage += '- missing';
 
     if (errorMessage != '')
         return res.status(400).json({
@@ -498,17 +492,9 @@ router.post('/missing', upload.single('fileToUpload'), async (req, res, next) =>
                 });
 
             if (tokenResult.token.userId == user.userId) {
-                animal.image = req.file ? "uploads\\" + req.file.filename : "uploads\\noImage.jpg";
-
-                let missingPost = new Missing({
-                    'ownerId': user.userId,
-                    'postId': CryptoManager.GenerateId(),
-                    'date': date,
-                    'animal': animal,
-                    'missingDate': missingDate,
-                    'collar': collar,
-                    'addressId': addressId
-                });
+                missing.image = req.file ? req.file.filename : "noImage.jpg";
+                missing.postId = CryptoManager.GenerateId();
+                let missingPost = new Missing(missing);
                 missingPost.save().then((result) => {
                     if (result)
                         return res.status(201).json({
