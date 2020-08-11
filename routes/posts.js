@@ -9,15 +9,20 @@ const Missing = require('../models/Missing').model;
 let CryptoManager = require('../CustomModules/CryptoManager');
 var multer = require('multer');
 var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: function(req, file, cb) {
         cb(null, 'public/uploads');
     },
-    filename: function (req, file, cb) {
-        cb(null, 'ProfileImage-' + Date.now());
+    filename: function(req, file, cb) {
+        cb(null, 'Image-' + Date.now() + '.jpeg');
     }
 });
 var upload = multer({ storage: storage });
+var path = require('path');
+var appDir = path.dirname(require.main.filename)
 
+router.get('/uploads/:name', async(req, res) => {
+    res.sendFile(appDir + '/public/uploads/' + decodeURIComponent(req.params.name));
+});
 
 router.get('/', async (req, res, next) => {
     Mating.find({}, (error, matingResult) => {
