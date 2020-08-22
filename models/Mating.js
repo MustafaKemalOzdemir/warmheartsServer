@@ -24,7 +24,7 @@ const matingSchema = mongoose.Schema({
 
     //Kısır
     castrated: {
-        type: Boolean,
+        type: Number,
     },
 
     //Kedi
@@ -63,7 +63,7 @@ const matingSchema = mongoose.Schema({
     },
 
     heat: {
-        type: Boolean,
+        type: Number,
         required: true
     },
 

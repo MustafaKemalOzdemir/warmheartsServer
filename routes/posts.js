@@ -429,7 +429,7 @@ router.post('/mating', upload.single('fileToUpload'), async(req, res, next) => {
                         return res.status(201).json({
                             'success': true,
                             'message': 'Mating Post has been created',
-                            'adoption': result
+                            'mating': result
                         });
                 }).catch((error) => {
                     if (error)
@@ -494,7 +494,7 @@ router.post('/missing', upload.single('fileToUpload'), async(req, res, next) => 
                         return res.status(201).json({
                             'success': true,
                             'message': 'Missing Post has been created',
-                            'adoption': result
+                            'missing': result
                         });
                 }).catch((error) => {
                     if (error)
