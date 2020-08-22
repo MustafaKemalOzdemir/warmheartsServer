@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
 
     lastname: {
         type: String,
-        required: true
+        required: false
     },
 
     email: {
@@ -24,7 +24,13 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+
+    phoneNumber: {
+        type: String,
+        required: false
+    },
+
 });
 
 

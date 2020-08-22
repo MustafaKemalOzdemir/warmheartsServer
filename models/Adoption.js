@@ -17,6 +17,16 @@ const adoptionSchema = mongoose.Schema({
         required: true
     },
 
+    animalName: {
+        type: String,
+        required: true,
+    },
+
+    //Kısır
+    castrated: {
+        type: Boolean,
+    },
+
     //Kedi
     type: {
         type: String,
@@ -29,7 +39,7 @@ const adoptionSchema = mongoose.Schema({
     },
     //dişi
     gender: {
-        type: Number,
+        type: String,
         required: true
     },
 
@@ -44,12 +54,12 @@ const adoptionSchema = mongoose.Schema({
     },
 
     source: {
-        type: Number,
+        type: String,
         required: true
     },
     //Aşı
     regularVaccine: {
-        type: Boolean,
+        type: Number,
     },
 
     city: {
@@ -64,6 +74,16 @@ const adoptionSchema = mongoose.Schema({
 
     addressDetail: {
         type: String,
+        required: true
+    },
+
+    latitude: {
+        type: Number,
+        required: true
+    },
+
+    longitude: {
+        type: Number,
         required: true
     },
 

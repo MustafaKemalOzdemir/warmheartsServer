@@ -18,6 +18,14 @@ const missingSchema = mongoose.Schema({
         required: true
     },
 
+    animalName: {
+        type: String,
+        required: true,
+    },
+    //Kısır
+    castrated: {
+        type: Boolean,
+    },
     //Kedi
     type: {
         type: String,
@@ -30,7 +38,7 @@ const missingSchema = mongoose.Schema({
     },
     //dişi
     gender: {
-        type: Number,
+        type: String,
         required: true
     },
 
@@ -45,12 +53,12 @@ const missingSchema = mongoose.Schema({
     },
 
     source: {
-        type: Number,
+        type: String,
         required: true
     },
     //Aşı
     regularVaccine: {
-        type: Boolean,
+        type: Number,
     },
 
     missingDate: {
@@ -59,7 +67,7 @@ const missingSchema = mongoose.Schema({
     },
     //Tasma
     collar: {
-        type: Boolean,
+        type: Number,
         required: true
     },
 
@@ -75,6 +83,16 @@ const missingSchema = mongoose.Schema({
 
     addressDetail: {
         type: String,
+        required: true
+    },
+
+    latitude: {
+        type: Number,
+        required: true
+    },
+
+    longitude: {
+        type: Number,
         required: true
     },
 
