@@ -8,31 +8,31 @@ const Missing = require('../models/Missing').model;
 let CryptoManager = require('../CustomModules/CryptoManager');
 var multer = require('multer');
 var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: function(req, file, cb) {
         cb(null, 'public/uploads');
     },
-    filename: function (req, file, cb) {
+    filename: function(req, file, cb) {
         console.log(file);
         cb(null, 'Image-' + Date.now() + '.jpeg');
     }
 });
 var upload = multer({ storage: storage });
 
-router.get('/', async (req, res, next) => {
+router.get('/', async(req, res, next) => {
     Mating.find({}, (error, matingResult) => {
         Missing.find({}, (erro, missingResult) => {
             Adoption.find({}, (err, adoptionResult) => {
                 var posts = [];
-                posts = posts.concat(matingResult);
-                posts = posts.concat(missingResult);
-                posts = posts.concat(adoptionResult);
-                return res.status(200).json(matingResult);
+                posts = posts.concat({ mating: matingResult });
+                posts = posts.concat({ missing: missingResult });
+                posts = posts.concat({ adoptation: adoptionResult });
+                return res.status(200).json({ success: true, list: posts });
             });
         });
     });
 });
 
-router.get('/adoption', async (req, res, next) => {
+router.get('/adoption', async(req, res, next) => {
     Adoption.find({}, (error, searchResult) => {
         if (error)
             return res.status(400).json({
@@ -46,7 +46,7 @@ router.get('/adoption', async (req, res, next) => {
             });
     });
 });
-router.get('/mating', async (req, res, next) => {
+router.get('/mating', async(req, res, next) => {
     Mating.find({}, (error, searchResult) => {
         if (error)
             return res.status(400).json({
@@ -60,8 +60,8 @@ router.get('/mating', async (req, res, next) => {
             });
     });
 });
-router.get('/missing', async (req, res, next) => {
-    Missing.find({}, async (error, searchResult) => {
+router.get('/missing', async(req, res, next) => {
+    Missing.find({}, async(error, searchResult) => {
         if (error)
             return res.status(400).json({
                 'Success': false,
@@ -75,7 +75,7 @@ router.get('/missing', async (req, res, next) => {
     });
 });
 
-router.get('/adoption/:id', async (req, res, next) => {
+router.get('/adoption/:id', async(req, res, next) => {
     console.log(req.params);
     Adoption.findOne({ 'animalId': req.params.id }, (error, adoption) => {
         if (error)
@@ -95,7 +95,7 @@ router.get('/adoption/:id', async (req, res, next) => {
             });
     });
 });
-router.get('/mating/:id', async (req, res, next) => {
+router.get('/mating/:id', async(req, res, next) => {
     console.log(req.params);
     Mating.findOne({ 'animalId': req.params.id }, (error, mating) => {
         if (error)
@@ -115,7 +115,7 @@ router.get('/mating/:id', async (req, res, next) => {
             });
     });
 });
-router.get('/missing/:id', async (req, res, next) => {
+router.get('/missing/:id', async(req, res, next) => {
     console.log(req.params);
     Missing.findOne({ 'animalId': req.params.id }, (error, missing) => {
         if (error)
@@ -136,7 +136,7 @@ router.get('/missing/:id', async (req, res, next) => {
     });
 });
 
-router.delete('/adoption/:id', async (req, res, next) => {
+router.delete('/adoption/:id', async(req, res, next) => {
     const { token, email, password, } = req.body;
     let errorMessage = '';
     if (!token)
@@ -181,7 +181,7 @@ router.delete('/adoption/:id', async (req, res, next) => {
             });
     });
 });
-router.delete('/mating/:id', async (req, res, next) => {
+router.delete('/mating/:id', async(req, res, next) => {
     const { token, email, password, } = req.body;
     let errorMessage = '';
     if (!token)
@@ -226,7 +226,7 @@ router.delete('/mating/:id', async (req, res, next) => {
             });
     });
 });
-router.delete('/missing/:id', async (req, res, next) => {
+router.delete('/missing/:id', async(req, res, next) => {
     const { token, email, password, } = req.body;
     let errorMessage = '';
     if (!token)
@@ -272,7 +272,7 @@ router.delete('/missing/:id', async (req, res, next) => {
     });
 });
 
-router.get('/user/:id/adoptions', async (req, res, next) => {
+router.get('/user/:id/adoptions', async(req, res, next) => {
     console.log(req.params);
     Adoption.find({ 'ownerId': req.params.id }, (error, adoptions) => {
         if (error)
@@ -286,7 +286,7 @@ router.get('/user/:id/adoptions', async (req, res, next) => {
         });
     });
 });
-router.get('/user/:id/matings', async (req, res, next) => {
+router.get('/user/:id/matings', async(req, res, next) => {
     console.log(req.params);
     Mating.find({ 'ownerId': req.params.id }, (error, matings) => {
         if (error)
@@ -300,7 +300,7 @@ router.get('/user/:id/matings', async (req, res, next) => {
         });
     });
 });
-router.get('/user/:id/missings', async (req, res, next) => {
+router.get('/user/:id/missings', async(req, res, next) => {
     console.log(req.params);
     Missing.find({ 'ownerId': req.params.id }, (error, missings) => {
         if (error)
@@ -381,6 +381,7 @@ router.post('/adoption', upload.array('fileToUpload', 10), async (req, res, next
         });
     }
 });
+
 router.post('/mating', upload.array('fileToUpload', 10), async (req, res, next) => {
     console.log(req.files);
 
@@ -430,7 +431,7 @@ router.post('/mating', upload.array('fileToUpload', 10), async (req, res, next) 
                         return res.status(201).json({
                             'success': true,
                             'message': 'Mating Post has been created',
-                            'adoption': result
+                            'mating': result
                         });
                 }).catch((error) => {
                     if (error)
@@ -496,7 +497,7 @@ router.post('/missing', upload.array('fileToUpload', 10), async (req, res, next)
                         return res.status(201).json({
                             'success': true,
                             'message': 'Missing Post has been created',
-                            'adoption': result
+                            'missing': result
                         });
                 }).catch((error) => {
                     if (error)

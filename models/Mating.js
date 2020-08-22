@@ -17,6 +17,16 @@ const matingSchema = mongoose.Schema({
         required: true
     },
 
+    animalName: {
+        type: String,
+        required: true,
+    },
+
+    //Kısır
+    castrated: {
+        type: Number,
+    },
+
     //Kedi
     type: {
         type: String,
@@ -29,7 +39,7 @@ const matingSchema = mongoose.Schema({
     },
     //dişi
     gender: {
-        type: Number,
+        type: String,
         required: true
     },
 
@@ -44,16 +54,16 @@ const matingSchema = mongoose.Schema({
     },
 
     source: {
-        type: Number,
+        type: String,
         required: true
     },
     //Aşı
     regularVaccine: {
-        type: Boolean,
+        type: Number,
     },
 
     heat: {
-        type: Boolean,
+        type: Number,
         required: true
     },
 
@@ -69,6 +79,16 @@ const matingSchema = mongoose.Schema({
 
     addressDetail: {
         type: String,
+        required: true
+    },
+
+    latitude: {
+        type: Number,
+        required: true
+    },
+
+    longitude: {
+        type: Number,
         required: true
     },
 });
