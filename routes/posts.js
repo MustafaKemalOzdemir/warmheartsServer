@@ -8,17 +8,17 @@ const Missing = require('../models/Missing').model;
 let CryptoManager = require('../CustomModules/CryptoManager');
 var multer = require('multer');
 var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(null, 'public/uploads');
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         console.log(file);
         cb(null, 'Image-' + Date.now() + '.jpeg');
     }
 });
 var upload = multer({ storage: storage });
 
-router.get('/', async(req, res, next) => {
+router.get('/', async (req, res, next) => {
     Mating.find({}, (error, matingResult) => {
         Missing.find({}, (erro, missingResult) => {
             Adoption.find({}, (err, adoptionResult) => {
@@ -32,7 +32,7 @@ router.get('/', async(req, res, next) => {
     });
 });
 
-router.get('/adoption', async(req, res, next) => {
+router.get('/adoption', async (req, res, next) => {
     Adoption.find({}, (error, searchResult) => {
         if (error)
             return res.status(400).json({
@@ -46,7 +46,7 @@ router.get('/adoption', async(req, res, next) => {
             });
     });
 });
-router.get('/mating', async(req, res, next) => {
+router.get('/mating', async (req, res, next) => {
     Mating.find({}, (error, searchResult) => {
         if (error)
             return res.status(400).json({
@@ -60,8 +60,8 @@ router.get('/mating', async(req, res, next) => {
             });
     });
 });
-router.get('/missing', async(req, res, next) => {
-    Missing.find({}, async(error, searchResult) => {
+router.get('/missing', async (req, res, next) => {
+    Missing.find({}, async (error, searchResult) => {
         if (error)
             return res.status(400).json({
                 'Success': false,
@@ -75,7 +75,7 @@ router.get('/missing', async(req, res, next) => {
     });
 });
 
-router.get('/adoption/:id', async(req, res, next) => {
+router.get('/adoption/:id', async (req, res, next) => {
     console.log(req.params);
     Adoption.findOne({ 'animalId': req.params.id }, (error, adoption) => {
         if (error)
@@ -95,7 +95,7 @@ router.get('/adoption/:id', async(req, res, next) => {
             });
     });
 });
-router.get('/mating/:id', async(req, res, next) => {
+router.get('/mating/:id', async (req, res, next) => {
     console.log(req.params);
     Mating.findOne({ 'animalId': req.params.id }, (error, mating) => {
         if (error)
@@ -115,7 +115,7 @@ router.get('/mating/:id', async(req, res, next) => {
             });
     });
 });
-router.get('/missing/:id', async(req, res, next) => {
+router.get('/missing/:id', async (req, res, next) => {
     console.log(req.params);
     Missing.findOne({ 'animalId': req.params.id }, (error, missing) => {
         if (error)
@@ -136,7 +136,7 @@ router.get('/missing/:id', async(req, res, next) => {
     });
 });
 
-router.delete('/adoption/:id', async(req, res, next) => {
+router.delete('/adoption/:id', async (req, res, next) => {
     const { token, email, password, } = req.body;
     let errorMessage = '';
     if (!token)
@@ -181,7 +181,7 @@ router.delete('/adoption/:id', async(req, res, next) => {
             });
     });
 });
-router.delete('/mating/:id', async(req, res, next) => {
+router.delete('/mating/:id', async (req, res, next) => {
     const { token, email, password, } = req.body;
     let errorMessage = '';
     if (!token)
@@ -226,7 +226,7 @@ router.delete('/mating/:id', async(req, res, next) => {
             });
     });
 });
-router.delete('/missing/:id', async(req, res, next) => {
+router.delete('/missing/:id', async (req, res, next) => {
     const { token, email, password, } = req.body;
     let errorMessage = '';
     if (!token)
@@ -272,7 +272,7 @@ router.delete('/missing/:id', async(req, res, next) => {
     });
 });
 
-router.get('/user/:id/adoptions', async(req, res, next) => {
+router.get('/user/:id/adoptions', async (req, res, next) => {
     console.log(req.params);
     Adoption.find({ 'ownerId': req.params.id }, (error, adoptions) => {
         if (error)
@@ -286,7 +286,7 @@ router.get('/user/:id/adoptions', async(req, res, next) => {
         });
     });
 });
-router.get('/user/:id/matings', async(req, res, next) => {
+router.get('/user/:id/matings', async (req, res, next) => {
     console.log(req.params);
     Mating.find({ 'ownerId': req.params.id }, (error, matings) => {
         if (error)
@@ -300,7 +300,7 @@ router.get('/user/:id/matings', async(req, res, next) => {
         });
     });
 });
-router.get('/user/:id/missings', async(req, res, next) => {
+router.get('/user/:id/missings', async (req, res, next) => {
     console.log(req.params);
     Missing.find({ 'ownerId': req.params.id }, (error, missings) => {
         if (error)
@@ -315,7 +315,7 @@ router.get('/user/:id/missings', async(req, res, next) => {
     });
 });
 
-router.post('/adoption', upload.single('fileToUpload'), async(req, res, next) => {
+router.post('/adoption', upload.array('fileToUpload', 10), async (req, res, next) => {
 
     const { token, email, password, adoption } = req.body;
     let errorMessage = '';
@@ -355,7 +355,9 @@ router.post('/adoption', upload.single('fileToUpload'), async(req, res, next) =>
                 });
 
             if (tokenResult.token.userId == user.userId) {
-                adoption.image = req.file ? req.file.filename : "noImage.jpg";
+                adoption.images = req.files.map((file) => {
+                    return file.filename;
+                });
                 adoption.postId = CryptoManager.GenerateId();
                 let adoptionPost = new Adoption(adoption);
 
@@ -381,7 +383,7 @@ router.post('/adoption', upload.single('fileToUpload'), async(req, res, next) =>
         });
     }
 });
-router.post('/mating', upload.single('fileToUpload'), async(req, res, next) => {
+router.post('/mating', upload.array('fileToUpload', 10), async (req, res, next) => {
 
     const { token, email, password, mating } = req.body;
     let errorMessage = '';
@@ -421,7 +423,9 @@ router.post('/mating', upload.single('fileToUpload'), async(req, res, next) => {
                 });
 
             if (tokenResult.token.userId == user.userId) {
-                mating.image = req.file ? req.file.filename : "noImage.jpg";
+                mating.images = req.files.map((file) => {
+                    return file.filename;
+                });
                 mating.postId = CryptoManager.GenerateId();
                 let matingPost = new Mating(mating);
                 matingPost.save().then((result) => {
@@ -446,7 +450,7 @@ router.post('/mating', upload.single('fileToUpload'), async(req, res, next) => {
         });
     }
 });
-router.post('/missing', upload.single('fileToUpload'), async(req, res, next) => {
+router.post('/missing', upload.array('fileToUpload', 10), async (req, res, next) => {
 
     const { token, email, password, missing } = req.body;
     let errorMessage = '';
@@ -486,7 +490,9 @@ router.post('/missing', upload.single('fileToUpload'), async(req, res, next) => 
                 });
 
             if (tokenResult.token.userId == user.userId) {
-                missing.image = req.file ? req.file.filename : "noImage.jpg";
+                missing.images = req.files.map((file) => {
+                    return file.filename;
+                });
                 missing.postId = CryptoManager.GenerateId();
                 let missingPost = new Missing(missing);
                 missingPost.save().then((result) => {

@@ -48,10 +48,9 @@ const adoptionSchema = mongoose.Schema({
         required: true
     },
 
-    image: {
-        type: String,
-        required: true
-    },
+    images:[ {
+        type: String
+    }],
 
     source: {
         type: String,
