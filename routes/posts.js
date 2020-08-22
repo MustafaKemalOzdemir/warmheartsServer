@@ -315,8 +315,8 @@ router.get('/user/:id/missings', async (req, res, next) => {
     });
 });
 
-router.post('/adoption', upload.single('fileToUpload'), async (req, res, next) => {
-
+router.post('/adoption', upload.array('fileToUpload', 10), async (req, res, next) => {
+    console.log(req.files);
     const { token, email, password, adoption } = req.body;
     let errorMessage = '';
     if (!token)
@@ -381,7 +381,8 @@ router.post('/adoption', upload.single('fileToUpload'), async (req, res, next) =
         });
     }
 });
-router.post('/mating', upload.single('fileToUpload'), async (req, res, next) => {
+router.post('/mating', upload.array('fileToUpload', 10), async (req, res, next) => {
+    console.log(req.files);
 
     const { token, email, password, mating } = req.body;
     let errorMessage = '';
@@ -446,7 +447,8 @@ router.post('/mating', upload.single('fileToUpload'), async (req, res, next) => 
         });
     }
 });
-router.post('/missing', upload.single('fileToUpload'), async (req, res, next) => {
+router.post('/missing', upload.array('fileToUpload', 10), async (req, res, next) => {
+    console.log(req.files);
 
     const { token, email, password, missing } = req.body;
     let errorMessage = '';
