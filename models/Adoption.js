@@ -12,6 +12,16 @@ const adoptionSchema = mongoose.Schema({
         required: true
     },
 
+    title: {
+        type: String,
+        required: true
+    },
+
+    description: {
+        type: String,
+        required: true
+    },
+
     date: {
         type: String,
         required: true
@@ -24,7 +34,7 @@ const adoptionSchema = mongoose.Schema({
 
     //Kısır
     castrated: {
-        type: Boolean,
+        type: Number,
     },
 
     //Kedi
@@ -48,7 +58,7 @@ const adoptionSchema = mongoose.Schema({
         required: true
     },
 
-    images:[ {
+    images: [{
         type: String
     }],
 

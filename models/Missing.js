@@ -13,6 +13,16 @@ const missingSchema = mongoose.Schema({
         required: true
     },
 
+    title: {
+        type: String,
+        required: true
+    },
+
+    description: {
+        type: String,
+        required: true
+    },
+
     date: {
         type: String,
         required: true
@@ -24,7 +34,7 @@ const missingSchema = mongoose.Schema({
     },
     //Kısır
     castrated: {
-        type: Boolean,
+        type: Number,
     },
     //Kedi
     type: {
@@ -47,7 +57,7 @@ const missingSchema = mongoose.Schema({
         required: true
     },
 
-    images:[ {
+    images: [{
         type: String
     }],
 
