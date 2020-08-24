@@ -400,7 +400,7 @@ router.post('/mating', async(req, res, next) => {
                 'message': 'Error uploading files'
             });
         }
-        const { token, email, password, mating } = req.body.callBody;
+        const { token, email, password, mating } = JSON.parse(req.body.callBody);
         let errorMessage = '';
         if (!token)
             errorMessage += '- token\n';
@@ -474,7 +474,7 @@ router.post('/missing', async(req, res, next) => {
                 'message': 'Error uploading files'
             });
         }
-        const { token, email, password, missing } = req.body.callBody;
+        const { token, email, password, missing } = JSON.parse(req.body.callBody);
         let errorMessage = '';
         if (!token)
             errorMessage += '- token';

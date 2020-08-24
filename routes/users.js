@@ -5,16 +5,32 @@ let CryptoManager = require('../CustomModules/CryptoManager');
 let Auth = require('../CustomModules/Authentication');
 let User = require('../models/User').model;
 
-router.get('/', async (req, res) => {
+router.get('/', async(req, res) => {
     User.find((err, users) => {
         return res.status(200).json({
-            'sucess': true,
+            'success': true,
             'result': users
         });
     });
 });
 
-router.post('/signup', async (req, res) => {
+router.get('/:userId', async(req, res) => {
+    User.findOne({ userId: req.params.userId }, (err, users) => {
+        if (users) {
+            return res.status(200).json({
+                'success': true,
+                'result': users
+            });
+        } else {
+            return res.status(200).json({
+                'success': false,
+                'message': 'No user found'
+            });
+        }
+    });
+});
+
+router.post('/signup', async(req, res) => {
     const { email, firstname, lastname, password } = req.body;
     var firstName = '';
     var lastName = '';
@@ -87,7 +103,7 @@ router.post('/signup', async (req, res) => {
     });
 });
 
-router.post('/signin', async (req, res) => {
+router.post('/signin', async(req, res) => {
 
     const { email, password } = req.body;
     console.log(req.body)
@@ -129,7 +145,7 @@ router.post('/signin', async (req, res) => {
     });
 });
 
-router.post('/edit', async (req, res) => {
+router.post('/edit', async(req, res) => {
 
     const { email, password, token, newEmail, newPassword, newFirstname, newLastname } = req.body;
 
