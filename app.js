@@ -16,6 +16,12 @@ app.get('/images/:name', async(req, res) => {
     res.sendFile(__dirname + '/public/uploads/' + decodeURIComponent(req.params.name));
 });
 
+app.get('/test', async(req, res) => {
+    res.status(200).json({
+        success: true
+    });
+});
+
 app.use('/posts', postRoute);
 app.use('/users', userRoute);
 app.use('/static', staticRoute);

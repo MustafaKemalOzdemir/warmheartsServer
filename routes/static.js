@@ -22,6 +22,12 @@ const animalData = [{
                 "race": "Siyam"
             },
             {
+                "race": "Scottish Fold"
+            },
+            {
+                "race": "Smokin Kedi"
+            },
+            {
                 "race": "Van"
             },
             {
